@@ -1,18 +1,21 @@
+$(document).ready(function () {
+ 
+ 
+ var plants = ["anenome","tree","tulips", "geranium", "crocus"];
 
- var plants = ["anenome","maple tree","spring"];
- var input = $("#input").val().trim();
-
-
-
+function addButton () {
+  $("#imageButton").empty();
 for(var i =0; i < plants.length; i++) {
    var plantButton = $("<button>");
    plantButton.append(plants[i]);
    plantButton.attr("data-value", plants[i]);
-  $("#images").prepend(plantButton);
+   plantButton.attr("data-still", );
+  $("#imageButton").prepend(plantButton);
+};
 };
 
 
-$("#images").on("click", "button", function() {
+$("#imageButton").on("click", "button", function() {
 
   var imageInput = $(this).attr("data-value")
   console.log(imageInput)
@@ -38,28 +41,14 @@ $("#images").on("click", "button", function() {
         });
     });
 
-    // -----------
+    
 
-    // $("#images").on("click", function() {
+    $("body").on("click", "#search", function() {
+      // setting a variable for the api
 
-    //   // setting a variable for the api
-     
-    //   var queryURL = "https://api.giphy.com/v1/gifs/random?" + "api_key=dc6zaTOxFJmzC&tag" +  "q=" + input;
-    //   console.log(queryURL)
-
-    //   //creating the request to get data from the api
-    //   $.ajax({
-    //     url: queryURL,
-    //     method: "GET"
-    //   })
-
-    //   //the part that handles the response
-    //     .then(function(response) {
-
-    //       var imageUrl = response.data.image_original_url;
-    //       var springImage = $("<img>");
-    //       springImage.attr("src", imageUrl);
-    //       springImage.attr("alt", "cat image");
-    //       $("#images").prepend(springImage);
-    //     });
-    // });
+      var input = $("#input").val().trim();
+      plants.push(input);
+      addButton();
+    });
+    addButton();
+  });
