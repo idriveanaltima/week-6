@@ -1,5 +1,5 @@
 $(document).ready(function () {
-//declaring the plants array with intial values
+  //declaring the plants array with intial values
   var plants = ["tree", "tulips", "geranium", "crocus"];
 
   //creating a function to add buttons based on the number of plants in the array
@@ -9,92 +9,79 @@ $(document).ready(function () {
       var plantButton = $("<button>");
       plantButton.append(plants[i]);
       plantButton.attr("data-value", plants[i]);
+      plantButton.addClass("btn btn-lg btn-outline-primary m-2");
       $("#imageButton").append(plantButton);
     };
   };
-//on click function that generates the request/response from giphy and displays the images on the screen
-  // $("#imageButton").on("click", "button", function () {
-
-  //   var imageInput = $(this).attr("data-value")
-  //   console.log(imageInput)
-  //   // setting a variable for the api
-
-  //   var queryURL = "https://api.giphy.com/v1/gifs/random?tag=" + imageInput + "&api_key=dc6zaTOxFJmzC";
-  //   console.log(queryURL)
-
-  //   //creating the request to get data from the api
-  //   $.ajax({
-  //       url: queryURL,
-  //       method: "GET"
-  //     })
-
-  //     //the part that handles the response
-  //     .then(function (response) {
-  //       console.log(response)
-
-  //       var imageUrl = response.data.image_original_url;
-  //       var stillImageUrl = response.data.fixed_height_small_still_url;
-  //       var stillImageUrl = response.data.fixed_height_small_still_url;
-  //       var springImage = $("<img>");
-  //       springImage.attr("src", stillImageUrl);
-  //       springImage.attr("data-still", stillImageUrl);
-  //       springImage.attr("data-animate", imageUrl);
-  //       springImage.attr("data-status", "still");
-  //       springImage.attr("alt",  "giphy image");
-  //       $("#images").prepend(springImage);
-  //     });
-  // });
 
   $("#imageButton").on("click", "button", function () {
-  var imageInput = $(this).attr("data-value")
-    console.log(imageInput)
+    var imageInput = $(this).attr("data-value");
     // setting a variable for the api
-
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + imageInput + "&api_key=dc6zaTOxFJmzC" + "&limit=10";
-    console.log(queryURL)
-
-    //creating the request to get data from the api
     $.ajax({
         url: queryURL,
-        method: "GET"
+        method: "GET",
       })
-
-      //the part that handles the response
       .then(function (response) {
         console.log(response)
-     for (i=0; i < response.data.length; i++) {
-        var imageUrl = response.data[i].images.original.url;
-        var stillImageUrl = response.data[i].images.original.url;
-        var rating = response.data[i].rating;
-        var springImage = $("<img>");
-        springImage.attr("src", stillImageUrl);
-        springImage.attr("data-still", stillImageUrl);
-        springImage.attr("data-animate", imageUrl);
-        springImage.attr("data-status", "still");
-        springImage.attr("alt",  "giphy image");
-        // $("#images").append(rating);
-        $("#images").prepend(springImage);
-     };
+       
+        for (i = 0; i < response.data.length; i++) {
+          var imageUrl = response.data[i].images.original.url;
+          var stillImageUrl = response.data[i].images.fixed_height_still.url;
+          var rating = response.data[i].rating.toUpperCase();
+          var title = response.data[i].title;
+          if(rating == "PG" || rating == "G") {       
+          var springImage = $("<img>");
+          springImage.addClass("img-thumbnail");
+          springImage.attr({
+            src: stillImageUrl,
+            alt: title,
+            "data-still": stillImageUrl,
+            "data-animate": imageUrl,
+            "data-status": "still",
+       
+          });
+          var newDiv = $("<div class='imgBox m-3'>");
+          var titleSpan = $("<span>");
+          var ratingSpan = $("<span>");
+          ratingSpan.css({
+                "display": "block",
+          });
+          newDiv.css({
+                "width": "250px",
+                "height": "250px",
+                "float": "left",
+                "background-size": "contain",
+                "overflow": "inherit",
+          });
+          newDiv.prependTo("#images")
+          ratingSpan.prependTo(newDiv);
+          titleSpan.prependTo(newDiv);
+          ratingSpan.prepend("Rating: " + rating);
+          titleSpan.prepend(title);
+          newDiv.append(springImage);          
+        };{
+        };
+      };
       });
   });
-
-
-  $("body").on("click", "#search", function () {
-    // setting a variable for the api
-
+  $("body").on("click", "#add", function () {
     var input = $("#input").val().trim();
+    if (plants.indexOf(input) == -1) {
     plants.push(input);
     addButton();
-  }).on("click" , "img", function () {
+    }else{
+      console.log("already in the list")
+    };
+   }).on("click", "img", function () {
     var status = $(this).attr("data-status");
-     if(status === "still") {
+    if (status === "still") {
       $(this).attr("src", $(this).attr("data-animate"));
       $(this).attr("data-status", "animate");
     } else {
       $(this).attr("src", $(this).attr("data-still"));
       $(this).attr("data-status", "still");
     }
-
-     });
+  });
   addButton();
 });
